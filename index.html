@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Photo Pile 💖</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(135deg, #c9d6ff, #e2e2e2);
+
+            transition: 1s ease;
+
+            position: relative;
+        }
+
+        /* FALLING HEARTS */
+
+        .falling {
+
+            position: absolute;
+
+            top: -20px;
+
+            animation: fall linear infinite;
+
+            opacity: 0.8;
+
+            z-index: 1;
+
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+
+            0% {
+                transform: translateY(-10vh);
+            }
+
+            100% {
+                transform: translateY(110vh);
+            }
+        }
+
+        /* TITLE */
+
+        .title {
+
+            font-size: 2.2rem;
+
+            color: white;
+
+            margin-bottom: 25px;
+
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, .2);
+
+            z-index: 5;
+
+            text-align: center;
+        }
+
+        /* CARD */
+
+        .pile-area {
+
+            perspective: 1200px;
+
+            z-index: 5;
+        }
+
+        .pile {
+
+            width: 300px;
+            height: 420px;
+
+            position: relative;
+
+            transform-style: preserve-3d;
+
+            transition: transform .9s;
+        }
+
+        .pile.flipped {
+
+            transform: rotateY(180deg);
+        }
+
+        /* FRONT + BACK */
+
+        .front,
+        .back {
+
+            position: absolute;
+
+            width: 100%;
+            height: 100%;
+
+            border-radius: 35px;
+
+            backface-visibility: hidden;
+
+            overflow: hidden;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            border: 5px solid white;
+
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, .2);
+        }
+
+        /* FRONT */
+
+        .front {
+
+            background:
+                linear-gradient(135deg,
+                    #667eea,
+                    #764ba2);
+
+            color: white;
+        }
+
+        .front h1 {
+
+            font-size: 2.3rem;
+
+            margin-bottom: 12px;
+        }
+
+        .front p {
+
+            font-size: 1rem;
+        }
+
+        /* BACK */
+
+        .back {
+
+            background: white;
+
+            transform: rotateY(180deg);
+        }
+
+        .back img {
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+        /* BUTTON */
+
+        .btn {
+
+            margin-top: 30px;
+
+            padding: 15px 30px;
+
+            border: none;
+
+            border-radius: 40px;
+
+            background:
+                linear-gradient(135deg,
+                    #3a86ff,
+                    #8338ec);
+
+            color: white;
+
+            font-size: 1rem;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            z-index: 5;
+
+            box-shadow:
+                0 10px 20px rgba(0, 0, 0, .2);
+
+            transition: .3s;
+        }
+
+        .btn:hover {
+
+            transform: scale(1.08);
+        }
+
+        /* MOBILE */
+
+        @media(max-width:768px) {
+
+            .pile {
+
+                width: 230px;
+                height: 330px;
+            }
+
+            .title {
+
+                font-size: 1.6rem;
+
+                padding: 0 10px;
+            }
+
+            .btn {
+
+                font-size: .9rem;
+
+                padding: 12px 22px;
+            }
+
+            .front h1 {
+
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="title">
+        💝 <span style="color:red;">ကံကြမ္မာဟောတမ်း</span> 💝
+    </div>
+
+    <div class="pile-area">
+
+        <div class="pile" id="pileCard">
+
+            <div class="front">
+
+                <h3>💖 ဖူးစာဖက်ရှာရန် 💖</h3>
+
+
+            </div>
+
+            <div class="back">
+
+                <img id="randomPhoto" src="photo1.jpg">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <button class="btn" id="magicBtn">
+
+        💝 ဒီကိုနှိပ်ပါ 💝
+
+    </button>
+
+    <script>
+
+        /* PHOTO LIST */
+
+        const photos = [
+
+            "photo1.jpg",
+            "photo2.jpg",
+            "photo3.jpg",
+            "photo4.jpg",
+            "photo5.jpg",
+            "photo6.jpg",
+            "photo7.jpg"
+
+        ];
+
+        /* BACKGROUND COLORS */
+
+        const backgrounds = [
+
+            "linear-gradient(135deg,#c9d6ff,#e2e2e2)",
+
+            "linear-gradient(135deg,#a1c4fd,#c2e9fb)",
+
+            "linear-gradient(135deg,#d4fc79,#96e6a1)",
+
+            "linear-gradient(135deg,#84fab0,#8fd3f4)",
+
+            "linear-gradient(135deg,#fccb90,#d57eeb)",
+
+            "linear-gradient(135deg,#667eea,#764ba2)",
+
+            "linear-gradient(135deg,#89f7fe,#66a6ff)"
+
+        ];
+
+        const pile =
+            document.getElementById("pileCard");
+
+        const randomPhoto =
+            document.getElementById("randomPhoto");
+
+        const button =
+            document.getElementById("magicBtn");
+
+        let flipped = false;
+
+        /* RANDOM PHOTO */
+
+        function getRandomPhoto() {
+
+            const randomIndex =
+                Math.floor(
+                    Math.random() * photos.length
+                );
+
+            return photos[randomIndex];
+        }
+
+        /* CHANGE BACKGROUND */
+
+        function changeBackground() {
+
+            const randomBg =
+
+                backgrounds[Math.floor(
+                    Math.random() * backgrounds.length
+                )];
+
+            document.body.style.background =
+                randomBg;
+        }
+
+        /* CREATE HEARTS */
+
+        function createHearts() {
+
+            document
+                .querySelectorAll(".falling")
+                .forEach(item => item.remove());
+
+            const colors = [
+
+                "#ff4d6d",
+                "#ff85a1",
+                "#ff006e",
+                "#8338ec",
+                "#3a86ff",
+                "#06d6a0",
+                "#ffbe0b"
+
+            ];
+
+            const randomColor =
+                colors[Math.floor(
+                    Math.random() * colors.length
+                )];
+
+            for (let i = 0; i < 35; i++) {
+
+                const heart =
+                    document.createElement("div");
+
+                heart.classList.add("falling");
+
+                heart.innerHTML = "💖";
+
+                heart.style.color = randomColor;
+
+                heart.style.left =
+                    Math.random() * 100 + "vw";
+
+                heart.style.fontSize =
+                    Math.random() * 20 + 12 + "px";
+
+                heart.style.animationDuration =
+                    Math.random() * 5 + 4 + "s";
+
+                heart.style.animationDelay =
+                    Math.random() * 3 + "s";
+
+                document.body.appendChild(heart);
+            }
+        }
+
+        /* FIRST LOAD */
+
+        createHearts();
+
+        /* BUTTON CLICK */
+
+        button.addEventListener("click", () => {
+
+            changeBackground();
+
+            createHearts();
+
+            if (!flipped) {
+
+                randomPhoto.src =
+                    getRandomPhoto();
+
+                pile.classList.add("flipped");
+
+                flipped = true;
+
+                button.innerHTML =
+                    "💖 ပြန်ရွေးရန် 💖";
+            }
+
+            else {
+
+                pile.classList.remove("flipped");
+
+                setTimeout(() => {
+
+                    randomPhoto.src =
+                        getRandomPhoto();
+
+                    pile.classList.add("flipped");
+
+                }, 500);
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
